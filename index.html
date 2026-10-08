@@ -1,186 +1,658 @@
-<!DOCTYPE html> <html lang="es"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Captura de Datos</title>
+<!DOCTYPE html> <html lang="es"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Gestión de Registros</title>
 
 <style>
+
+/* ========================================================= CONFIGURACIÓN GENERAL ========================================================= */
 
 {
 
 box-sizing: border-box; margin: 0; padding: 0; }
 
-body { font-family: "Segoe UI", Arial, sans-serif; background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; padding: 40px 20px; }
+:root { --fondo: #080d1a; --fondo-2: #0f172a; --panel: #111827; --panel-2: #172033;
 
-.contenedor { width: 100%; max-width: 1100px; margin: auto; }
+--azul: #38bdf8; --azul-2: #0ea5e9; --morado: #8b5cf6; --verde: #22c55e; --amarillo: #f59e0b; --rojo: #f43f5e;
 
-/* ENCABEZADO */ .encabezado { text-align: center; margin-bottom: 30px; }
+--texto: #f8fafc; --texto-suave: #94a3b8;
 
-.encabezado .icono { width: 65px; height: 65px; margin: 0 auto 15px; border-radius: 18px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25); }
+--borde: rgba(148, 163, 184, 0.15); }
 
-h1 { font-size: 30px; font-weight: 700; color: #172554; margin-bottom: 7px; }
+body { font-family: "Segoe UI", Arial, sans-serif;
 
-.subtitulo { color: #64748b; font-size: 15px; }
+background: radial-gradient( circle at 10% 10%, rgba(56, 189, 248, 0.13), transparent 30% ), radial-gradient( circle at 90% 20%, rgba(139, 92, 246, 0.15), transparent 30% ), linear-gradient( 135deg, #050816, #0b1120 50%, #111827 );
 
-/* TARJETA */ .card { background: rgba(255, 255, 255, 0.95); border-radius: 22px; padding: 32px; box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08); border: 1px solid rgba(226, 232, 240, 0.9); margin-bottom: 25px; }
+min-height: 100vh; color: var(--texto);
 
-.titulo-card { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding-bottom: 18px; border-bottom: 1px solid #e2e8f0; }
+padding: 35px 25px; }
 
-.titulo-card span { width: 38px; height: 38px; border-radius: 10px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.contenedor { width: 100%; max-width: 1250px; margin: auto; }
 
-.titulo-card h2 { font-size: 20px; color: #1e293b; }
+/* ========================================================= ENCABEZADO ========================================================= */
 
-/* FORMULARIO */ .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.topbar { display: flex; align-items: center; justify-content: space-between;
 
-.campo { display: flex; flex-direction: column; }
+margin-bottom: 30px; padding: 5px; }
 
-.campo label { font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 8px; }
+.marca { display: flex; align-items: center; gap: 15px; }
 
-.campo input { width: 100%; padding: 13px 15px; border: 1px solid #cbd5e1; border-radius: 11px; outline: none; font-size: 15px; color: #1e293b; background: #f8fafc; transition: all 0.2s ease; }
+.logo { width: 55px; height: 55px;
 
-.campo input:hover { border-color: #94a3b8; }
+display: flex; align-items: center; justify-content: center;
 
-.campo input:focus { border-color: #6366f1; background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12); }
+border-radius: 16px;
 
-/* BOTONES */ .acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+background: linear-gradient( 135deg, var(--azul), var(--morado) );
 
-button { border: none; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+color: white; font-size: 25px;
+
+box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25); }
+
+.marca h1 { font-size: 25px; font-weight: 700; letter-spacing: -0.5px; }
+
+.marca p { color: var(--texto-suave); font-size: 13px; margin-top: 3px; }
+
+.estado-online { display: flex; align-items: center; gap: 8px;
+
+color: #86efac; font-size: 13px;
+
+padding: 9px 14px;
+
+background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.2);
+
+border-radius: 30px; }
+
+.punto { width: 8px; height: 8px; background: var(--verde); border-radius: 50%;
+
+box-shadow: 0 0 12px var(--verde); }
+
+/* ========================================================= CONTENIDO PRINCIPAL ========================================================= */
+
+.layout { display: grid;
+
+grid-template-columns: 390px 1fr;
+
+gap: 25px;
+
+align-items: start; }
+
+/* ========================================================= PANEL DEL FORMULARIO ========================================================= */
+
+.panel { background: linear-gradient( 145deg, rgba(23, 32, 51, 0.96), rgba(15, 23, 42, 0.96) );
+
+border: 1px solid var(--borde);
+
+border-radius: 25px;
+
+padding: 27px;
+
+box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+
+backdrop-filter: blur(15px); }
+
+.panel-titulo { display: flex; align-items: center;
+
+gap: 13px;
+
+margin-bottom: 25px; }
+
+.panel-icono { width: 44px; height: 44px;
+
+border-radius: 13px;
+
+display: flex; align-items: center; justify-content: center;
+
+background: rgba(56, 189, 248, 0.1);
+
+border: 1px solid rgba(56, 189, 248, 0.2);
+
+color: var(--azul);
+
+font-size: 20px; }
+
+.panel-titulo h2 { font-size: 18px; }
+
+.panel-titulo p { color: var(--texto-suave); font-size: 12px; margin-top: 3px; }
+
+/* ========================================================= CAMPOS ========================================================= */
+
+.campo { margin-bottom: 18px; }
+
+.campo label { display: block;
+
+color: #cbd5e1;
+
+font-size: 12px;
+
+font-weight: 600;
+
+margin-bottom: 7px;
+
+text-transform: uppercase;
+
+letter-spacing: 0.5px; }
+
+.input-contenedor { position: relative; }
+
+.input-icono { position: absolute;
+
+left: 14px; top: 50%;
+
+transform: translateY(-50%);
+
+color: #64748b;
+
+font-size: 16px;
+
+pointer-events: none; }
+
+.campo input { width: 100%;
+
+height: 48px;
+
+padding: 0 14px 0 43px;
+
+background: rgba(2, 6, 23, 0.65);
+
+border: 1px solid rgba(148, 163, 184, 0.15);
+
+border-radius: 13px;
+
+color: white;
+
+outline: none;
+
+font-size: 14px;
+
+transition: all 0.25s ease; }
+
+.campo input::placeholder { color: #475569; }
+
+.campo input:hover { border-color: rgba(56, 189, 248, 0.3); }
+
+.campo input:focus { border-color: var(--azul);
+
+background: rgba(2, 6, 23, 0.9);
+
+box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.08); }
+
+/* ========================================================= BOTONES ========================================================= */
+
+.acciones { display: grid;
+
+grid-template-columns: 1fr 1fr;
+
+gap: 10px;
+
+margin-top: 25px; }
+
+button { border: none;
+
+cursor: pointer;
+
+font-family: inherit;
+
+font-weight: 600;
+
+transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+border-radius: 12px;
+
+min-height: 45px;
+
+font-size: 13px; }
 
 button:hover:not(:disabled) { transform: translateY(-2px); }
 
 button:active:not(:disabled) { transform: translateY(0); }
 
-button:disabled { opacity: 0.45; cursor: not-allowed; }
+button:disabled { opacity: 0.25; cursor: not-allowed; }
 
-#btnRegistrar { background: #4f46e5; color: white; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.2); }
+#btnRegistrar { background: linear-gradient( 135deg, #0ea5e9, #2563eb );
 
-#btnRegistrar:hover:not(:disabled) { background: #4338ca; }
+color: white;
 
-#btnConsultar { background: #0f766e; color: white; }
+box-shadow: 0 8px 20px rgba(14, 165, 233, 0.2); }
 
-#btnConsultar:hover { background: #115e59; }
+#btnConsultar { background: rgba(139, 92, 246, 0.13);
 
-#btnModificar { background: #f59e0b; color: white; }
+border: 1px solid rgba(139, 92, 246, 0.25);
 
-#btnModificar:hover:not(:disabled) { background: #d97706; }
+color: #c4b5fd; }
 
-#btnEliminar { background: #ef4444; color: white; }
+#btnModificar { background: rgba(245, 158, 11, 0.12);
 
-#btnEliminar:hover:not(:disabled) { background: #dc2626; }
+border: 1px solid rgba(245, 158, 11, 0.25);
 
-/* ESTADO */ #estado { min-height: 25px; text-align: center; font-size: 14px; font-weight: 600; color: #4f46e5; margin: 15px 0; }
+color: #fbbf24; }
 
-/* TABLA */ #seccionTabla { display: none; }
+#btnEliminar { background: rgba(244, 63, 94, 0.12);
 
-.tabla-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+border: 1px solid rgba(244, 63, 94, 0.25);
 
-.tabla-header h2 { font-size: 21px; color: #1e293b; }
+color: #fb7185; }
 
-#btnCerrar { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+#btnRegistrar:hover:not(:disabled) { box-shadow: 0 10px 25px rgba(14, 165, 233, 0.35); }
 
-#btnCerrar:hover { background: #e2e8f0; }
+/* ========================================================= ESTADO ========================================================= */
 
-.busqueda { position: relative; margin-bottom: 18px; }
+#estado { min-height: 22px;
 
-.busqueda::before { content: "🔎"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 15px; }
+margin-top: 18px;
 
-#buscador { width: 100%; padding: 13px 15px 13px 42px; border: 1px solid #cbd5e1; border-radius: 11px; outline: none; font-size: 14px; background: #f8fafc; }
+text-align: center;
 
-#buscador:focus { border-color: #6366f1; background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+color: var(--azul);
 
-.tabla-scroll { width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 14px; }
+font-size: 13px;
 
-table { width: 100%; border-collapse: collapse; min-width: 850px; background: white; }
+font-weight: 600; }
 
-th { background: #f8fafc; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; padding: 15px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+/* ========================================================= TABLA ========================================================= */
 
-td { padding: 14px 12px; font-size: 14px; color: #475569; border-bottom: 1px solid #f1f5f9; }
+#seccionTabla { display: none; }
+
+.tabla-panel { min-width: 0; }
+
+.tabla-top { display: flex;
+
+justify-content: space-between;
+
+align-items: center;
+
+gap: 15px;
+
+margin-bottom: 20px; }
+
+.tabla-titulo { display: flex;
+
+align-items: center;
+
+gap: 12px; }
+
+.tabla-titulo-icono { width: 42px; height: 42px;
+
+border-radius: 12px;
+
+display: flex; align-items: center; justify-content: center;
+
+background: rgba(139, 92, 246, 0.12);
+
+color: #a78bfa; }
+
+.tabla-titulo h2 { font-size: 20px; }
+
+.tabla-titulo p { color: var(--texto-suave);
+
+font-size: 12px;
+
+margin-top: 3px; }
+
+#btnCerrar { padding: 0 16px;
+
+background: rgba(148, 163, 184, 0.08);
+
+border: 1px solid rgba(148, 163, 184, 0.15);
+
+color: #cbd5e1; }
+
+/* ========================================================= BUSCADOR ========================================================= */
+
+.buscador-contenedor { position: relative;
+
+margin-bottom: 18px; }
+
+.buscador-contenedor span { position: absolute;
+
+left: 16px;
+
+top: 50%;
+
+transform: translateY(-50%);
+
+color: #64748b; }
+
+#buscador { width: 100%;
+
+height: 48px;
+
+padding-left: 45px;
+
+padding-right: 15px;
+
+border-radius: 14px;
+
+border: 1px solid rgba(148, 163, 184, 0.15);
+
+background: rgba(2, 6, 23, 0.55);
+
+color: white;
+
+outline: none;
+
+font-size: 14px; }
+
+#buscador:focus { border-color: var(--morado);
+
+box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.08); }
+
+/* ========================================================= TABLA ========================================================= */
+
+.tabla-scroll { overflow-x: auto;
+
+border: 1px solid rgba(148, 163, 184, 0.12);
+
+border-radius: 17px; }
+
+table { width: 100%;
+
+min-width: 850px;
+
+border-collapse: collapse; }
+
+th { background: rgba(2, 6, 23, 0.55);
+
+color: #64748b;
+
+text-transform: uppercase;
+
+font-size: 10px;
+
+letter-spacing: 0.8px;
+
+text-align: left;
+
+padding: 15px 13px;
+
+border-bottom: 1px solid rgba(148, 163, 184, 0.12); }
+
+td { padding: 15px 13px;
+
+color: #cbd5e1;
+
+font-size: 13px;
+
+border-bottom: 1px solid rgba(148, 163, 184, 0.07); }
 
 tbody tr { transition: background 0.2s ease; }
 
-tbody tr:hover { background: #f8fafc; }
+tbody tr:hover { background: rgba(56, 189, 248, 0.045); }
 
 tbody tr:last-child td { border-bottom: none; }
 
-td button { padding: 8px 11px; font-size: 12px; margin: 2px; }
+td button { min-height: 34px;
 
-/* BOTONES DE ACCIONES DE TABLA */ td button:first-child { background: #eef2ff; color: #4f46e5; }
+padding: 0 10px;
 
-td button:first-child:hover { background: #e0e7ff; }
+margin-right: 5px;
 
-td button:last-child { background: #fee2e2; color: #dc2626; }
+font-size: 11px; }
 
-td button:last-child:hover { background: #fecaca; }
+td button:first-child { background: rgba(56, 189, 248, 0.1);
 
-/* RESPONSIVE */ @media (max-width: 700px) { body { padding: 20px 12px; }
+border: 1px solid rgba(56, 189, 248, 0.18);
 
-.card { padding: 22px 18px; border-radius: 17px; }
+color: #7dd3fc; }
 
-h1 { font-size: 25px; }
+td button:last-child { background: rgba(244, 63, 94, 0.1);
 
-.form-grid { grid-template-columns: 1fr; gap: 16px; }
+border: 1px solid rgba(244, 63, 94, 0.18);
 
-.acciones { flex-direction: column; }
+color: #fb7185; }
 
-.acciones button { width: 100%; }
+/* ========================================================= RESPONSIVE ========================================================= */
 
-.tabla-header { align-items: stretch; flex-direction: column; }
+@media (max-width: 950px) {
 
-#btnCerrar { width: 100%; } } </style> </head>
+.layout { grid-template-columns: 1fr; }
+
+.panel { width: 100%; }
+
+}
+
+@media (max-width: 600px) {
+
+body { padding: 20px 12px; }
+
+.topbar { align-items: flex-start; }
+
+.estado-online { display: none; }
+
+.marca h1 { font-size: 20px; }
+
+.marca p { font-size: 11px; }
+
+.logo { width: 47px; height: 47px; }
+
+.panel { padding: 20px; border-radius: 20px; }
+
+.acciones { grid-template-columns: 1fr; }
+
+.tabla-top { align-items: stretch;
+
+flex-direction: column; }
+
+#btnCerrar { width: 100%; }
+
+}
+
+</style> </head>
 
 <body>
 
 <div class="contenedor">
 
-<div class="encabezado"> <div class="icono">👤</div> <h1>Captura de Datos</h1> <p class="subtitulo">Administra y consulta tus registros fácilmente</p> </div>
+<!-- ===================================================== ENCABEZADO ====================================================== -->
 
-<!-- FORMULARIO --> <div class="card">
+<header class="topbar">
 
-<div class="titulo-card"> <span>📝</span> <h2>Información del registro</h2> </div>
+<div class="marca">
 
-<form id="formulario">
+<div class="logo"> 👥 </div>
 
-<input type="hidden" id="id">
+<div> <h1>Gestión de Registros</h1>
 
-<div class="form-grid">
-
-<div class="campo"> <label for="nombre">Nombre</label> <input type="text" id="nombre" placeholder="Ingresa el nombre" required> </div>
-
-<div class="campo"> <label for="edad">Edad</label> <input type="number" id="edad" placeholder="Ingresa la edad" required min="1" max="120"> </div>
-
-<div class="campo"> <label for="cargo">Cargo</label> <input type="text" id="cargo" placeholder="Ingresa el cargo" required> </div>
-
-<div class="campo"> <label for="correo">Correo</label> <input type="text" id="correo" placeholder="ejemplo@correo.com" required> </div>
-
-<div class="campo"> <label for="telefono">Teléfono</label> <input type="number" id="telefono" placeholder="Ingresa el teléfono" required min="1" max="1000000000"> </div>
+<p> Panel de administración de datos </p> </div>
 
 </div>
 
+<div class="estado-online">
+
+<span class="punto"></span>
+
+Sistema activo
+
+</div>
+
+</header>
+
+<!-- ===================================================== CONTENIDO ====================================================== -->
+
+<main class="layout">
+
+<!-- =================================================== FORMULARIO ==================================================== -->
+
+<section class="panel">
+
+<div class="panel-titulo">
+
+<div class="panel-icono"> ✚ </div>
+
+<div>
+
+<h2>Nuevo registro</h2>
+
+<p> Introduce la información </p>
+
+</div>
+
+</div>
+
+<form id="formulario">
+
+<input type="hidden" id="id" >
+
+<!-- NOMBRE -->
+
+<div class="campo">
+
+<label for="nombre"> Nombre </label>
+
+<div class="input-contenedor">
+
+<span class="input-icono"> 👤 </span>
+
+<input type="text" id="nombre" placeholder="Nombre completo" required >
+
+</div>
+
+</div>
+
+<!-- EDAD -->
+
+<div class="campo">
+
+<label for="edad"> Edad </label>
+
+<div class="input-contenedor">
+
+<span class="input-icono"> 🎂 </span>
+
+<input type="number" id="edad" placeholder="Edad" required min="1" max="120" >
+
+</div>
+
+</div>
+
+<!-- CARGO -->
+
+<div class="campo">
+
+<label for="cargo"> Cargo </label>
+
+<div class="input-contenedor">
+
+<span class="input-icono"> 💼 </span>
+
+<input type="text" id="cargo" placeholder="Cargo o puesto" required >
+
+</div>
+
+</div>
+
+<!-- CORREO -->
+
+<div class="campo">
+
+<label for="correo"> Correo electrónico </label>
+
+<div class="input-contenedor">
+
+<span class="input-icono"> ✉️ </span>
+
+<input type="text" id="correo" placeholder="correo@ejemplo.com" required >
+
+</div>
+
+</div>
+
+<!-- TELEFONO -->
+
+<div class="campo">
+
+<label for="telefono"> Teléfono </label>
+
+<div class="input-contenedor">
+
+<span class="input-icono"> 📱 </span>
+
+<input type="number" id="telefono" placeholder="Número telefónico" required min="1" max="1000000000" >
+
+</div>
+
+</div>
+
+<!-- BOTONES -->
+
 <div class="acciones">
 
-<button type="button" id="btnRegistrar"> ➕ Registrar </button>
+<button type="button" id="btnRegistrar" > ✚ Registrar </button>
 
-<button type="button" id="btnConsultar"> 📋 Consultar </button>
+<button type="button" id="btnConsultar" > ☷ Consultar </button>
 
-<button type="button" id="btnModificar"> ✏️ Modificar </button>
+<button type="button" id="btnModificar" > ✎ Modificar </button>
 
-<button type="button" id="btnEliminar"> 🗑️ Eliminar </button>
+<button type="button" id="btnEliminar" > × Eliminar </button>
 
 </div>
 
 </form>
 
-</div>
-
 <p id="estado"></p>
 
-<!-- TABLA --> <div id="seccionTabla" class="card">
+</section>
 
-<div class="tabla-header"> <h2>📋 Registros</h2> <button type="button" id="btnCerrar"> ✕ Cerrar tabla </button> </div>
+<!-- =================================================== TABLA ==================================================== -->
 
-<div class="busqueda"> <input type="text" id="buscador" placeholder="Buscar por nombre..."> </div>
+<section id="seccionTabla" class="panel tabla-panel" >
+
+<div class="tabla-top">
+
+<div class="tabla-titulo">
+
+<div class="tabla-titulo-icono"> ☷ </div>
+
+<div>
+
+<h2>Registros</h2>
+
+<p> Consulta y administra la información </p>
+
+</div>
+
+</div>
+
+<button type="button" id="btnCerrar" > ✕ Cerrar </button>
+
+</div>
+
+<!-- BUSCADOR -->
+
+<div class="buscador-contenedor">
+
+<span> 🔎 </span>
+
+<input type="text" id="buscador" placeholder="Buscar por nombre..." >
+
+</div>
+
+<!-- TABLA -->
 
 <div class="tabla-scroll">
 
 <table>
 
-<thead> <tr> <th>Fecha</th> <th>Nombre</th> <th>Edad</th> <th>Cargo</th> <th>Correo</th> <th>Teléfono</th> <th>Acciones</th> </tr> </thead>
+<thead>
+
+<tr>
+
+<th> Fecha </th>
+
+<th> Nombre </th>
+
+<th> Edad </th>
+
+<th> Cargo </th>
+
+<th> Correo </th>
+
+<th> Teléfono </th>
+
+<th> Acciones </th>
+
+</tr>
+
+</thead>
 
 <tbody id="tabla"></tbody>
 
@@ -188,25 +660,43 @@ h1 { font-size: 25px; }
 
 </div>
 
-</div>
+</section>
+
+</main>
 
 </div>
+
+<!-- ======================================================= JAVASCRIPT ORIGINAL ======================================================== -->
 
 <script>
 
 var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyx0lR3kZkr5B2Ebtg0jW0B0YctCFeW8iTxuPIJiuDLBOqgeqOMvl7Hz-divoaahL3t/exec";
 
-var registros = []; var tablaVisible = false;
+var registros = [];
 
-// Enviar datos al script function enviar(datos) {
+var tablaVisible = false;
 
-return fetch(URL_SCRIPT, { method: "POST", body: new URLSearchParams(datos)
+// ENVIAR DATOS
 
-}).then(function (r) { return r.json(); });
+function enviar(datos) {
+
+return fetch(URL_SCRIPT, {
+
+method: "POST",
+
+body: new URLSearchParams(datos)
+
+}).then(function (r) {
+
+return r.json();
+
+});
 
 }
 
-// Botones activos según el estado function actualizarBotones() {
+// ACTUALIZAR BOTONES
+
+function actualizarBotones() {
 
 var hayRegistro = document.getElementById("id").value !== "";
 
@@ -218,6 +708,8 @@ document.getElementById("btnEliminar").disabled = !hayRegistro;
 
 }
 
+// LIMPIAR FORMULARIO
+
 function limpiarFormulario() {
 
 document.getElementById("formulario").reset();
@@ -228,9 +720,11 @@ actualizarBotones();
 
 }
 
-// REGISTRAR document.getElementById("btnRegistrar").onclick = function () {
+// REGISTRAR
 
-if (!document.getElementById("formulario").reportValidity()) return;
+document.getElementById("btnRegistrar").onclick = function () {
+
+if ( !document .getElementById("formulario") .reportValidity() ) return;
 
 document.getElementById("estado").textContent = "Guardando...";
 
@@ -250,23 +744,25 @@ telefono: document.getElementById("telefono").value
 
 }).then(function (respuesta) {
 
-terminarAccion(respuesta, "¡Registro guardado!");
+terminarAccion( respuesta, "¡Registro guardado!" );
 
 });
 
 };
 
-// CONSULTAR document.getElementById("btnConsultar").onclick = function () {
+// CONSULTAR
+
+document.getElementById("btnConsultar").onclick = function () {
 
 document.getElementById("estado").textContent = "Consultando...";
 
 tablaVisible = true;
 
-document.getElementById("seccionTabla").style.display = "block";
+document.getElementById("seccionTabla") .style.display = "block";
 
 cargarRegistros(function () {
 
-document.getElementById("estado").textContent = "";
+document.getElementById("estado") .textContent = "";
 
 });
 
@@ -276,7 +772,11 @@ function cargarRegistros(alTerminar) {
 
 fetch(URL_SCRIPT)
 
-.then(function (r) { return r.json(); })
+.then(function (r) {
+
+return r.json();
+
+})
 
 .then(function (datos) {
 
@@ -284,15 +784,17 @@ registros = datos;
 
 mostrarTabla();
 
-if (alTerminar) alTerminar();
+if (alTerminar) { alTerminar(); }
 
 });
 
 }
 
+// MOSTRAR TABLA
+
 function mostrarTabla() {
 
-var filtro = document.getElementById("buscador").value .trim() .toLowerCase();
+var filtro = document.getElementById("buscador") .value .trim() .toLowerCase();
 
 var tabla = document.getElementById("tabla");
 
@@ -304,35 +806,43 @@ if ( !reg.nombre .toString() .toLowerCase() .startsWith(filtro) ) return;
 
 var tr = document.createElement("tr");
 
-agregarCelda( tr, new Date(reg.fecha).toLocaleString() );
+agregarCelda( tr, new Date(reg.fecha) .toLocaleString() );
 
-agregarCelda(tr, reg.nombre);
+agregarCelda( tr, reg.nombre );
 
-agregarCelda(tr, reg.edad);
+agregarCelda( tr, reg.edad );
 
-agregarCelda(tr, reg.cargo);
+agregarCelda( tr, reg.cargo );
 
-agregarCelda(tr, reg.correo);
+agregarCelda( tr, reg.correo );
 
-agregarCelda(tr, reg.telefono);
+agregarCelda( tr, reg.telefono );
 
 var td = document.createElement("td");
 
 var btnModificarFila = document.createElement("button");
 
-btnModificarFila.textContent = "✏️ Modificar";
+btnModificarFila.textContent = "✎ Modificar";
 
-btnModificarFila.onclick = function () { cargarEnFormulario(reg); };
+btnModificarFila.onclick = function () {
+
+cargarEnFormulario(reg);
+
+};
 
 var btnEliminarFila = document.createElement("button");
 
-btnEliminarFila.textContent = "🗑️ Eliminar";
+btnEliminarFila.textContent = "× Eliminar";
 
-btnEliminarFila.onclick = function () { eliminar(reg.id); };
+btnEliminarFila.onclick = function () {
 
-td.appendChild(btnModificarFila);
+eliminar(reg.id);
 
-td.appendChild(btnEliminarFila);
+};
+
+td.appendChild( btnModificarFila );
+
+td.appendChild( btnEliminarFila );
 
 tr.appendChild(td);
 
@@ -342,7 +852,7 @@ tabla.appendChild(tr);
 
 }
 
-function agregarCelda(fila, texto) {
+function agregarCelda( fila, texto ) {
 
 var td = document.createElement("td");
 
@@ -352,21 +862,27 @@ fila.appendChild(td);
 
 }
 
-document.getElementById("buscador").oninput = mostrarTabla;
+// BUSCADOR
 
-// CERRAR TABLA document.getElementById("btnCerrar").onclick = function () {
+document.getElementById("buscador") .oninput = mostrarTabla;
+
+// CERRAR TABLA
+
+document.getElementById("btnCerrar") .onclick = function () {
 
 tablaVisible = false;
 
-document.getElementById("seccionTabla") .style.display = "none";
+document.getElementById( "seccionTabla" ).style.display = "none";
 
-document.getElementById("buscador").value = "";
+document.getElementById( "buscador" ).value = "";
 
-document.getElementById("tabla").innerHTML = "";
+document.getElementById( "tabla" ).innerHTML = "";
 
 };
 
-// Pasar registro al formulario function cargarEnFormulario(reg) {
+// CARGAR REGISTRO
+
+function cargarEnFormulario(reg) {
 
 document.getElementById("id").value = reg.id;
 
@@ -384,13 +900,21 @@ document.getElementById("estado").textContent = "Modificando registro: cambia lo
 
 actualizarBotones();
 
-window.scrollTo({ top: 0, behavior: "smooth" });
+window.scrollTo({
 
-document.getElementById("nombre").focus();
+top: 0,
+
+behavior: "smooth"
+
+});
+
+document.getElementById( "nombre" ).focus();
 
 }
 
-// MODIFICAR document.getElementById("btnModificar").onclick = function () {
+// MODIFICAR
+
+document.getElementById("btnModificar") .onclick = function () {
 
 var id = document.getElementById("id").value;
 
@@ -404,7 +928,7 @@ return;
 
 if ( !document .getElementById("formulario") .reportValidity() ) return;
 
-document.getElementById("estado").textContent = "Modificando...";
+document.getElementById("estado") .textContent = "Modificando...";
 
 enviar({
 
@@ -430,7 +954,9 @@ terminarAccion( respuesta, "¡Registro modificado!" );
 
 };
 
-// ELIMINAR document.getElementById("btnEliminar").onclick = function () {
+// ELIMINAR
+
+document.getElementById("btnEliminar") .onclick = function () {
 
 eliminar( document.getElementById("id").value );
 
@@ -440,7 +966,7 @@ function eliminar(id) {
 
 if ( !confirm( "¿Seguro que quieres eliminar este registro?" ) ) return;
 
-document.getElementById("estado").textContent = "Eliminando...";
+document.getElementById("estado") .textContent = "Eliminando...";
 
 enviar({
 
@@ -456,15 +982,25 @@ terminarAccion( respuesta, "Registro eliminado" );
 
 }
 
-// Mensaje al terminar cualquier acción function terminarAccion( respuesta, mensajeOk ) {
+// FINALIZAR ACCIÓN
 
-document.getElementById("estado").textContent = respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
+function terminarAccion( respuesta, mensajeOk ) {
+
+document.getElementById( "estado" ).textContent =
+
+respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
 
 limpiarFormulario();
 
-if (tablaVisible) { cargarRegistros(); }
+if (tablaVisible) {
+
+cargarRegistros();
 
 }
+
+}
+
+// INICIALIZAR
 
 actualizarBotones();
 
