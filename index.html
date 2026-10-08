@@ -1,264 +1,473 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Captura de Datos</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    table { border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #999; padding: 6px 12px; }
-    th { background: #eee; }
-    #seccionTabla { display: none; }
-  </style>
-</head>
+<!DOCTYPE html> <html lang="es"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Captura de Datos</title>
+
+<style>
+
+{
+
+box-sizing: border-box; margin: 0; padding: 0; }
+
+body { font-family: "Segoe UI", Arial, sans-serif; background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #e0f2fe 100%); min-height: 100vh; color: #1e293b; padding: 40px 20px; }
+
+.contenedor { width: 100%; max-width: 1100px; margin: auto; }
+
+/* ENCABEZADO */ .encabezado { text-align: center; margin-bottom: 30px; }
+
+.encabezado .icono { width: 65px; height: 65px; margin: 0 auto 15px; border-radius: 18px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25); }
+
+h1 { font-size: 30px; font-weight: 700; color: #172554; margin-bottom: 7px; }
+
+.subtitulo { color: #64748b; font-size: 15px; }
+
+/* TARJETA */ .card { background: rgba(255, 255, 255, 0.95); border-radius: 22px; padding: 32px; box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08); border: 1px solid rgba(226, 232, 240, 0.9); margin-bottom: 25px; }
+
+.titulo-card { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding-bottom: 18px; border-bottom: 1px solid #e2e8f0; }
+
+.titulo-card span { width: 38px; height: 38px; border-radius: 10px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+.titulo-card h2 { font-size: 20px; color: #1e293b; }
+
+/* FORMULARIO */ .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+.campo { display: flex; flex-direction: column; }
+
+.campo label { font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 8px; }
+
+.campo input { width: 100%; padding: 13px 15px; border: 1px solid #cbd5e1; border-radius: 11px; outline: none; font-size: 15px; color: #1e293b; background: #f8fafc; transition: all 0.2s ease; }
+
+.campo input:hover { border-color: #94a3b8; }
+
+.campo input:focus { border-color: #6366f1; background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12); }
+
+/* BOTONES */ .acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+
+button { border: none; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+
+button:hover:not(:disabled) { transform: translateY(-2px); }
+
+button:active:not(:disabled) { transform: translateY(0); }
+
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+#btnRegistrar { background: #4f46e5; color: white; box-shadow: 0 5px 15px rgba(79, 70, 229, 0.2); }
+
+#btnRegistrar:hover:not(:disabled) { background: #4338ca; }
+
+#btnConsultar { background: #0f766e; color: white; }
+
+#btnConsultar:hover { background: #115e59; }
+
+#btnModificar { background: #f59e0b; color: white; }
+
+#btnModificar:hover:not(:disabled) { background: #d97706; }
+
+#btnEliminar { background: #ef4444; color: white; }
+
+#btnEliminar:hover:not(:disabled) { background: #dc2626; }
+
+/* ESTADO */ #estado { min-height: 25px; text-align: center; font-size: 14px; font-weight: 600; color: #4f46e5; margin: 15px 0; }
+
+/* TABLA */ #seccionTabla { display: none; }
+
+.tabla-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+
+.tabla-header h2 { font-size: 21px; color: #1e293b; }
+
+#btnCerrar { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+#btnCerrar:hover { background: #e2e8f0; }
+
+.busqueda { position: relative; margin-bottom: 18px; }
+
+.busqueda::before { content: "🔎"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 15px; }
+
+#buscador { width: 100%; padding: 13px 15px 13px 42px; border: 1px solid #cbd5e1; border-radius: 11px; outline: none; font-size: 14px; background: #f8fafc; }
+
+#buscador:focus { border-color: #6366f1; background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+
+.tabla-scroll { width: 100%; overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 14px; }
+
+table { width: 100%; border-collapse: collapse; min-width: 850px; background: white; }
+
+th { background: #f8fafc; color: #475569; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; padding: 15px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+
+td { padding: 14px 12px; font-size: 14px; color: #475569; border-bottom: 1px solid #f1f5f9; }
+
+tbody tr { transition: background 0.2s ease; }
+
+tbody tr:hover { background: #f8fafc; }
+
+tbody tr:last-child td { border-bottom: none; }
+
+td button { padding: 8px 11px; font-size: 12px; margin: 2px; }
+
+/* BOTONES DE ACCIONES DE TABLA */ td button:first-child { background: #eef2ff; color: #4f46e5; }
+
+td button:first-child:hover { background: #e0e7ff; }
+
+td button:last-child { background: #fee2e2; color: #dc2626; }
+
+td button:last-child:hover { background: #fecaca; }
+
+/* RESPONSIVE */ @media (max-width: 700px) { body { padding: 20px 12px; }
+
+.card { padding: 22px 18px; border-radius: 17px; }
+
+h1 { font-size: 25px; }
+
+.form-grid { grid-template-columns: 1fr; gap: 16px; }
+
+.acciones { flex-direction: column; }
+
+.acciones button { width: 100%; }
+
+.tabla-header { align-items: stretch; flex-direction: column; }
+
+#btnCerrar { width: 100%; } } </style> </head>
+
 <body>
 
-  <h2>Captura de Datos</h2>
+<div class="contenedor">
 
-  <form id="formulario">
-    <input type="hidden" id="id">
+<div class="encabezado"> <div class="icono">👤</div> <h1>Captura de Datos</h1> <p class="subtitulo">Administra y consulta tus registros fácilmente</p> </div>
 
-    <label for="nombre">Nombre:</label><br>
-    <input type="text" id="nombre" required><br><br>
+<!-- FORMULARIO --> <div class="card">
 
-    <label for="edad">Edad:</label><br>
-    <input type="number" id="edad" required min="1" max="120"><br><br>
+<div class="titulo-card"> <span>📝</span> <h2>Información del registro</h2> </div>
 
-    <label for="cargo">Cargo:</label><br>
-    <input type="text" id="cargo" required><br><br>
+<form id="formulario">
 
-    <label for="correo">Correo:</label><br>
-    <input type="text" id="correo" required><br><br>
+<input type="hidden" id="id">
 
-    <label for="telefono">Telefono:</label><br>
-    <input type="number" id="telefono" required min="1" max="1000000000"><br><br>
+<div class="form-grid">
 
-    <button type="button" id="btnRegistrar">Registrar</button>
-    <button type="button" id="btnConsultar">Consultar</button>
-    <button type="button" id="btnModificar">Modificar</button>
-    <button type="button" id="btnEliminar">Eliminar</button>
-  </form>
+<div class="campo"> <label for="nombre">Nombre</label> <input type="text" id="nombre" placeholder="Ingresa el nombre" required> </div>
 
-  <p id="estado"></p>
+<div class="campo"> <label for="edad">Edad</label> <input type="number" id="edad" placeholder="Ingresa la edad" required min="1" max="120"> </div>
 
-  <div id="seccionTabla">
-    <h2>Registros</h2>
-    <button type="button" id="btnCerrar">Cerrar tabla</button>
-    <br><br>
-    <input type="text" id="buscador" placeholder="Buscar por nombre...">
+<div class="campo"> <label for="cargo">Cargo</label> <input type="text" id="cargo" placeholder="Ingresa el cargo" required> </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Nombre</th>
-          <th>Edad</th>
-          <th>Cargo</th>
-          <th>Correo</th>
-          <th>Telefono</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tabla"></tbody>
-    </table>
-  </div>
+<div class="campo"> <label for="correo">Correo</label> <input type="text" id="correo" placeholder="ejemplo@correo.com" required> </div>
 
-  <script>
-    var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyx0lR3kZkr5B2Ebtg0jW0B0YctCFeW8iTxuPIJiuDLBOqgeqOMvl7Hz-divoaahL3t/exec";
-    var registros = [];
-    var tablaVisible = false;
+<div class="campo"> <label for="telefono">Teléfono</label> <input type="number" id="telefono" placeholder="Ingresa el teléfono" required min="1" max="1000000000"> </div>
 
-    //  Enviar datos al script 
-    function enviar(datos) {
-      return fetch(URL_SCRIPT, {
-        method: "POST",
-        body: new URLSearchParams(datos)
-      }).then(function (r) { return r.json(); });
-    }
+</div>
 
-    //  Botones activos según el estado 
-    // Registrar: solo si NO hay un registro cargado
-    // Modificar y Eliminar: solo si hay un registro cargado
-    function actualizarBotones() {
-      var hayRegistro = document.getElementById("id").value !== "";
-      document.getElementById("btnRegistrar").disabled = hayRegistro;
-      document.getElementById("btnModificar").disabled = !hayRegistro;
-      document.getElementById("btnEliminar").disabled = !hayRegistro;
-    }
+<div class="acciones">
 
-    function limpiarFormulario() {
-      document.getElementById("formulario").reset();
-      document.getElementById("id").value = "";
-      actualizarBotones();
-    }
+<button type="button" id="btnRegistrar"> ➕ Registrar </button>
 
-    // funcion REGISTRAR 
-    document.getElementById("btnRegistrar").onclick = function () {
-      if (!document.getElementById("formulario").reportValidity()) return;
+<button type="button" id="btnConsultar"> 📋 Consultar </button>
 
-      document.getElementById("estado").textContent = "Guardando...";
-      enviar({
-        accion: "guardar",
-        // agrega aquí las variables que tengas en el formulario, por ejemplo:
-        // debe de terminar en "coma" si hay más variables, 
-        // o sin coma si es la última variable
-        nombre: document.getElementById("nombre").value,
-        edad: document.getElementById("edad").value,
-        cargo: document.getElementById("cargo").value,
-        correo: document.getElementById("correo").value,
-        telefono: document.getElementById("telefono").value
+<button type="button" id="btnModificar"> ✏️ Modificar </button>
 
-        // fin variables de formulario
-      }).then(function (respuesta) {
-        terminarAccion(respuesta, "¡Registro guardado!");
-      });
-    };
+<button type="button" id="btnEliminar"> 🗑️ Eliminar </button>
 
-    // funcion de CONSULTAR 
-    document.getElementById("btnConsultar").onclick = function () {
-      document.getElementById("estado").textContent = "Consultando...";
-      tablaVisible = true;
-      document.getElementById("seccionTabla").style.display = "block";
-      cargarRegistros(function () {
-        document.getElementById("estado").textContent = "";
-      }); 
-    };
+</div>
 
-    function cargarRegistros(alTerminar) {
-      fetch(URL_SCRIPT)
-        .then(function (r) { return r.json(); })
-        .then(function (datos) {
-          registros = datos;
-          mostrarTabla();
-          if (alTerminar) alTerminar();
-        });
-    }
+</form>
 
-    function mostrarTabla() {
-      var filtro = document.getElementById("buscador").value.trim().toLowerCase();
-      var tabla = document.getElementById("tabla");
-      tabla.innerHTML = "";
+</div>
 
-      registros.forEach(function (reg) {
-        // Solo muestra los nombres que INICIAN con lo escrito
-        if (!reg.nombre.toString().toLowerCase().startsWith(filtro)) return;
+<p id="estado"></p>
 
-        var tr = document.createElement("tr");
-        agregarCelda(tr, new Date(reg.fecha).toLocaleString());
+<!-- TABLA --> <div id="seccionTabla" class="card">
 
-        // Agregamos variables del formulario, por ejemplo:
-        agregarCelda(tr, reg.nombre);
-        agregarCelda(tr, reg.edad);
-        agregarCelda(tr, reg.cargo);
-        agregarCelda(tr, reg.correo);
-        agregarCelda(tr, reg.telefono);
+<div class="tabla-header"> <h2>📋 Registros</h2> <button type="button" id="btnCerrar"> ✕ Cerrar tabla </button> </div>
 
-        // fin variables del formulario
-        var td = document.createElement("td");
+<div class="busqueda"> <input type="text" id="buscador" placeholder="Buscar por nombre..."> </div>
 
-        var btnModificarFila = document.createElement("button");
-        btnModificarFila.textContent = "Modificar registro";
-        btnModificarFila.onclick = function () { cargarEnFormulario(reg); };
+<div class="tabla-scroll">
 
-        var btnEliminarFila = document.createElement("button");
-        btnEliminarFila.textContent = "Eliminar";
-        btnEliminarFila.onclick = function () { eliminar(reg.id); };
+<table>
 
-        td.appendChild(btnModificarFila);
-        td.appendChild(btnEliminarFila);
-        tr.appendChild(td);
-        tabla.appendChild(tr);
-      });
-    }
+<thead> <tr> <th>Fecha</th> <th>Nombre</th> <th>Edad</th> <th>Cargo</th> <th>Correo</th> <th>Teléfono</th> <th>Acciones</th> </tr> </thead>
 
-    function agregarCelda(fila, texto) {
-      var td = document.createElement("td");
-      td.textContent = texto;
-      fila.appendChild(td);
-    }
+<tbody id="tabla"></tbody>
 
-    document.getElementById("buscador").oninput = mostrarTabla;
+</table>
 
-    // CERRAR TABLA 
-    document.getElementById("btnCerrar").onclick = function () {
-      tablaVisible = false;
-      document.getElementById("seccionTabla").style.display = "none";
-      document.getElementById("buscador").value = "";
-      document.getElementById("tabla").innerHTML = "";
-    };
+</div>
 
-    // ---------- Pasar el registro al formulario ----------
-    function cargarEnFormulario(reg) {
-      document.getElementById("id").value = reg.id;
-      // variables de formulario
-      // aqui agrega las variables que tengas en el formulario, por ejemplo:
-      document.getElementById("nombre").value = reg.nombre;
-      document.getElementById("edad").value = reg.edad;
-      document.getElementById("cargo").value = reg.cargo;
-      document.getElementById("correo").value = reg.correo;
-      document.getElementById("telefono").value = reg.telefono;
+</div>
 
-      // fin variables de formulario
+</div>
 
-      document.getElementById("estado").textContent =
-        "Modificando registro: cambia los datos y presiona Modificar";
-      actualizarBotones();
+<script>
 
-      window.scrollTo(0, 0);                    // sube al formulario
-      document.getElementById("nombre").focus(); // cursor en el nombre
-    }
+var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyx0lR3kZkr5B2Ebtg0jW0B0YctCFeW8iTxuPIJiuDLBOqgeqOMvl7Hz-divoaahL3t/exec";
 
-    // ---------- MODIFICAR ----------
-    document.getElementById("btnModificar").onclick = function () {
-      var id = document.getElementById("id").value;
+var registros = []; var tablaVisible = false;
 
-      if (id === "") {
-        alert("Primero elige un registro con el botón 'Modificar registro'");
-        return;
-      }
-      if (!document.getElementById("formulario").reportValidity()) return;
+// Enviar datos al script function enviar(datos) {
 
-      document.getElementById("estado").textContent = "Modificando...";
-      enviar({
-        accion: "editar",
-        id: id,
-        
-        // agrega aquí las variables que tengas en el formulario, por ejemplo:  
-        nombre: document.getElementById("nombre").value,
-        edad: document.getElementById("edad").value,
-        cargo: document.getElementById("cargo").value,
-        correo: document.getElementById("correo").value,
-        telefono: document.getElementById("telefono").value
-        // fin variables de formulario
-      }).then(function (respuesta) {
-        terminarAccion(respuesta, "¡Registro modificado!");
-      });
-    };
+return fetch(URL_SCRIPT, { method: "POST", body: new URLSearchParams(datos)
 
-    // Funcion para ELIMINAR 
-    document.getElementById("btnEliminar").onclick = function () {
-      eliminar(document.getElementById("id").value);
-    };
+}).then(function (r) { return r.json(); });
 
-    function eliminar(id) {
-      if (!confirm("¿Seguro que quieres eliminar este registro?")) return;
+}
 
-      document.getElementById("estado").textContent = "Eliminando...";
-      enviar({ accion: "eliminar", id: id }).then(function (respuesta) {
-        terminarAccion(respuesta, "Registro eliminado");
-      });
-    }
+// Botones activos según el estado function actualizarBotones() {
 
-    // Mensaje al terminar cualquier acción 
-    function terminarAccion(respuesta, mensajeOk) {
-      document.getElementById("estado").textContent =
-        respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
-      limpiarFormulario();
-      if (tablaVisible) cargarRegistros();  // refresca la tabla si está abierta
-    }
+var hayRegistro = document.getElementById("id").value !== "";
 
-    actualizarBotones();
-  </script>
+document.getElementById("btnRegistrar").disabled = hayRegistro;
 
-</body>
-</html>
+document.getElementById("btnModificar").disabled = !hayRegistro;
+
+document.getElementById("btnEliminar").disabled = !hayRegistro;
+
+}
+
+function limpiarFormulario() {
+
+document.getElementById("formulario").reset();
+
+document.getElementById("id").value = "";
+
+actualizarBotones();
+
+}
+
+// REGISTRAR document.getElementById("btnRegistrar").onclick = function () {
+
+if (!document.getElementById("formulario").reportValidity()) return;
+
+document.getElementById("estado").textContent = "Guardando...";
+
+enviar({
+
+accion: "guardar",
+
+nombre: document.getElementById("nombre").value,
+
+edad: document.getElementById("edad").value,
+
+cargo: document.getElementById("cargo").value,
+
+correo: document.getElementById("correo").value,
+
+telefono: document.getElementById("telefono").value
+
+}).then(function (respuesta) {
+
+terminarAccion(respuesta, "¡Registro guardado!");
+
+});
+
+};
+
+// CONSULTAR document.getElementById("btnConsultar").onclick = function () {
+
+document.getElementById("estado").textContent = "Consultando...";
+
+tablaVisible = true;
+
+document.getElementById("seccionTabla").style.display = "block";
+
+cargarRegistros(function () {
+
+document.getElementById("estado").textContent = "";
+
+});
+
+};
+
+function cargarRegistros(alTerminar) {
+
+fetch(URL_SCRIPT)
+
+.then(function (r) { return r.json(); })
+
+.then(function (datos) {
+
+registros = datos;
+
+mostrarTabla();
+
+if (alTerminar) alTerminar();
+
+});
+
+}
+
+function mostrarTabla() {
+
+var filtro = document.getElementById("buscador").value .trim() .toLowerCase();
+
+var tabla = document.getElementById("tabla");
+
+tabla.innerHTML = "";
+
+registros.forEach(function (reg) {
+
+if ( !reg.nombre .toString() .toLowerCase() .startsWith(filtro) ) return;
+
+var tr = document.createElement("tr");
+
+agregarCelda( tr, new Date(reg.fecha).toLocaleString() );
+
+agregarCelda(tr, reg.nombre);
+
+agregarCelda(tr, reg.edad);
+
+agregarCelda(tr, reg.cargo);
+
+agregarCelda(tr, reg.correo);
+
+agregarCelda(tr, reg.telefono);
+
+var td = document.createElement("td");
+
+var btnModificarFila = document.createElement("button");
+
+btnModificarFila.textContent = "✏️ Modificar";
+
+btnModificarFila.onclick = function () { cargarEnFormulario(reg); };
+
+var btnEliminarFila = document.createElement("button");
+
+btnEliminarFila.textContent = "🗑️ Eliminar";
+
+btnEliminarFila.onclick = function () { eliminar(reg.id); };
+
+td.appendChild(btnModificarFila);
+
+td.appendChild(btnEliminarFila);
+
+tr.appendChild(td);
+
+tabla.appendChild(tr);
+
+});
+
+}
+
+function agregarCelda(fila, texto) {
+
+var td = document.createElement("td");
+
+td.textContent = texto;
+
+fila.appendChild(td);
+
+}
+
+document.getElementById("buscador").oninput = mostrarTabla;
+
+// CERRAR TABLA document.getElementById("btnCerrar").onclick = function () {
+
+tablaVisible = false;
+
+document.getElementById("seccionTabla") .style.display = "none";
+
+document.getElementById("buscador").value = "";
+
+document.getElementById("tabla").innerHTML = "";
+
+};
+
+// Pasar registro al formulario function cargarEnFormulario(reg) {
+
+document.getElementById("id").value = reg.id;
+
+document.getElementById("nombre").value = reg.nombre;
+
+document.getElementById("edad").value = reg.edad;
+
+document.getElementById("cargo").value = reg.cargo;
+
+document.getElementById("correo").value = reg.correo;
+
+document.getElementById("telefono").value = reg.telefono;
+
+document.getElementById("estado").textContent = "Modificando registro: cambia los datos y presiona Modificar";
+
+actualizarBotones();
+
+window.scrollTo({ top: 0, behavior: "smooth" });
+
+document.getElementById("nombre").focus();
+
+}
+
+// MODIFICAR document.getElementById("btnModificar").onclick = function () {
+
+var id = document.getElementById("id").value;
+
+if (id === "") {
+
+alert( "Primero elige un registro con el botón 'Modificar registro'" );
+
+return;
+
+}
+
+if ( !document .getElementById("formulario") .reportValidity() ) return;
+
+document.getElementById("estado").textContent = "Modificando...";
+
+enviar({
+
+accion: "editar",
+
+id: id,
+
+nombre: document.getElementById("nombre").value,
+
+edad: document.getElementById("edad").value,
+
+cargo: document.getElementById("cargo").value,
+
+correo: document.getElementById("correo").value,
+
+telefono: document.getElementById("telefono").value
+
+}).then(function (respuesta) {
+
+terminarAccion( respuesta, "¡Registro modificado!" );
+
+});
+
+};
+
+// ELIMINAR document.getElementById("btnEliminar").onclick = function () {
+
+eliminar( document.getElementById("id").value );
+
+};
+
+function eliminar(id) {
+
+if ( !confirm( "¿Seguro que quieres eliminar este registro?" ) ) return;
+
+document.getElementById("estado").textContent = "Eliminando...";
+
+enviar({
+
+accion: "eliminar",
+
+id: id
+
+}).then(function (respuesta) {
+
+terminarAccion( respuesta, "Registro eliminado" );
+
+});
+
+}
+
+// Mensaje al terminar cualquier acción function terminarAccion( respuesta, mensajeOk ) {
+
+document.getElementById("estado").textContent = respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
+
+limpiarFormulario();
+
+if (tablaVisible) { cargarRegistros(); }
+
+}
+
+actualizarBotones();
+
+</script>
+
+</body> </html>
