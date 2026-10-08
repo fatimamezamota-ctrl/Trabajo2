@@ -1,1009 +1,534 @@
-<!DOCTYPE html> <html lang="es"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Gestión de Registros</title>
-
-<style>
-
-/* ========================================================= CONFIGURACIÓN GENERAL ========================================================= */
-
-{
-
-box-sizing: border-box; margin: 0; padding: 0; }
-
-:root { --fondo: #080d1a; --fondo-2: #0f172a; --panel: #111827; --panel-2: #172033;
-
---azul: #38bdf8; --azul-2: #0ea5e9; --morado: #8b5cf6; --verde: #22c55e; --amarillo: #f59e0b; --rojo: #f43f5e;
-
---texto: #f8fafc; --texto-suave: #94a3b8;
-
---borde: rgba(148, 163, 184, 0.15); }
-
-body { font-family: "Segoe UI", Arial, sans-serif;
-
-background: radial-gradient( circle at 10% 10%, rgba(56, 189, 248, 0.13), transparent 30% ), radial-gradient( circle at 90% 20%, rgba(139, 92, 246, 0.15), transparent 30% ), linear-gradient( 135deg, #050816, #0b1120 50%, #111827 );
-
-min-height: 100vh; color: var(--texto);
-
-padding: 35px 25px; }
-
-.contenedor { width: 100%; max-width: 1250px; margin: auto; }
-
-/* ========================================================= ENCABEZADO ========================================================= */
-
-.topbar { display: flex; align-items: center; justify-content: space-between;
-
-margin-bottom: 30px; padding: 5px; }
-
-.marca { display: flex; align-items: center; gap: 15px; }
-
-.logo { width: 55px; height: 55px;
-
-display: flex; align-items: center; justify-content: center;
-
-border-radius: 16px;
-
-background: linear-gradient( 135deg, var(--azul), var(--morado) );
-
-color: white; font-size: 25px;
-
-box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25); }
-
-.marca h1 { font-size: 25px; font-weight: 700; letter-spacing: -0.5px; }
-
-.marca p { color: var(--texto-suave); font-size: 13px; margin-top: 3px; }
-
-.estado-online { display: flex; align-items: center; gap: 8px;
-
-color: #86efac; font-size: 13px;
-
-padding: 9px 14px;
-
-background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.2);
-
-border-radius: 30px; }
-
-.punto { width: 8px; height: 8px; background: var(--verde); border-radius: 50%;
-
-box-shadow: 0 0 12px var(--verde); }
-
-/* ========================================================= CONTENIDO PRINCIPAL ========================================================= */
-
-.layout { display: grid;
-
-grid-template-columns: 390px 1fr;
-
-gap: 25px;
-
-align-items: start; }
-
-/* ========================================================= PANEL DEL FORMULARIO ========================================================= */
-
-.panel { background: linear-gradient( 145deg, rgba(23, 32, 51, 0.96), rgba(15, 23, 42, 0.96) );
-
-border: 1px solid var(--borde);
-
-border-radius: 25px;
-
-padding: 27px;
-
-box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-
-backdrop-filter: blur(15px); }
-
-.panel-titulo { display: flex; align-items: center;
-
-gap: 13px;
-
-margin-bottom: 25px; }
-
-.panel-icono { width: 44px; height: 44px;
-
-border-radius: 13px;
-
-display: flex; align-items: center; justify-content: center;
-
-background: rgba(56, 189, 248, 0.1);
-
-border: 1px solid rgba(56, 189, 248, 0.2);
-
-color: var(--azul);
-
-font-size: 20px; }
-
-.panel-titulo h2 { font-size: 18px; }
-
-.panel-titulo p { color: var(--texto-suave); font-size: 12px; margin-top: 3px; }
-
-/* ========================================================= CAMPOS ========================================================= */
-
-.campo { margin-bottom: 18px; }
-
-.campo label { display: block;
-
-color: #cbd5e1;
-
-font-size: 12px;
-
-font-weight: 600;
-
-margin-bottom: 7px;
-
-text-transform: uppercase;
-
-letter-spacing: 0.5px; }
-
-.input-contenedor { position: relative; }
-
-.input-icono { position: absolute;
-
-left: 14px; top: 50%;
-
-transform: translateY(-50%);
-
-color: #64748b;
-
-font-size: 16px;
-
-pointer-events: none; }
-
-.campo input { width: 100%;
-
-height: 48px;
-
-padding: 0 14px 0 43px;
-
-background: rgba(2, 6, 23, 0.65);
-
-border: 1px solid rgba(148, 163, 184, 0.15);
-
-border-radius: 13px;
-
-color: white;
-
-outline: none;
-
-font-size: 14px;
-
-transition: all 0.25s ease; }
-
-.campo input::placeholder { color: #475569; }
-
-.campo input:hover { border-color: rgba(56, 189, 248, 0.3); }
-
-.campo input:focus { border-color: var(--azul);
-
-background: rgba(2, 6, 23, 0.9);
-
-box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.08); }
-
-/* ========================================================= BOTONES ========================================================= */
-
-.acciones { display: grid;
-
-grid-template-columns: 1fr 1fr;
-
-gap: 10px;
-
-margin-top: 25px; }
-
-button { border: none;
-
-cursor: pointer;
-
-font-family: inherit;
-
-font-weight: 600;
-
-transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-
-border-radius: 12px;
-
-min-height: 45px;
-
-font-size: 13px; }
-
-button:hover:not(:disabled) { transform: translateY(-2px); }
-
-button:active:not(:disabled) { transform: translateY(0); }
-
-button:disabled { opacity: 0.25; cursor: not-allowed; }
-
-#btnRegistrar { background: linear-gradient( 135deg, #0ea5e9, #2563eb );
-
-color: white;
-
-box-shadow: 0 8px 20px rgba(14, 165, 233, 0.2); }
-
-#btnConsultar { background: rgba(139, 92, 246, 0.13);
-
-border: 1px solid rgba(139, 92, 246, 0.25);
-
-color: #c4b5fd; }
-
-#btnModificar { background: rgba(245, 158, 11, 0.12);
-
-border: 1px solid rgba(245, 158, 11, 0.25);
-
-color: #fbbf24; }
-
-#btnEliminar { background: rgba(244, 63, 94, 0.12);
-
-border: 1px solid rgba(244, 63, 94, 0.25);
-
-color: #fb7185; }
-
-#btnRegistrar:hover:not(:disabled) { box-shadow: 0 10px 25px rgba(14, 165, 233, 0.35); }
-
-/* ========================================================= ESTADO ========================================================= */
-
-#estado { min-height: 22px;
-
-margin-top: 18px;
-
-text-align: center;
-
-color: var(--azul);
-
-font-size: 13px;
-
-font-weight: 600; }
-
-/* ========================================================= TABLA ========================================================= */
-
-#seccionTabla { display: none; }
-
-.tabla-panel { min-width: 0; }
-
-.tabla-top { display: flex;
-
-justify-content: space-between;
-
-align-items: center;
-
-gap: 15px;
-
-margin-bottom: 20px; }
-
-.tabla-titulo { display: flex;
-
-align-items: center;
-
-gap: 12px; }
-
-.tabla-titulo-icono { width: 42px; height: 42px;
-
-border-radius: 12px;
-
-display: flex; align-items: center; justify-content: center;
-
-background: rgba(139, 92, 246, 0.12);
-
-color: #a78bfa; }
-
-.tabla-titulo h2 { font-size: 20px; }
-
-.tabla-titulo p { color: var(--texto-suave);
-
-font-size: 12px;
-
-margin-top: 3px; }
-
-#btnCerrar { padding: 0 16px;
-
-background: rgba(148, 163, 184, 0.08);
-
-border: 1px solid rgba(148, 163, 184, 0.15);
-
-color: #cbd5e1; }
-
-/* ========================================================= BUSCADOR ========================================================= */
-
-.buscador-contenedor { position: relative;
-
-margin-bottom: 18px; }
-
-.buscador-contenedor span { position: absolute;
-
-left: 16px;
-
-top: 50%;
-
-transform: translateY(-50%);
-
-color: #64748b; }
-
-#buscador { width: 100%;
-
-height: 48px;
-
-padding-left: 45px;
-
-padding-right: 15px;
-
-border-radius: 14px;
-
-border: 1px solid rgba(148, 163, 184, 0.15);
-
-background: rgba(2, 6, 23, 0.55);
-
-color: white;
-
-outline: none;
-
-font-size: 14px; }
-
-#buscador:focus { border-color: var(--morado);
-
-box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.08); }
-
-/* ========================================================= TABLA ========================================================= */
-
-.tabla-scroll { overflow-x: auto;
-
-border: 1px solid rgba(148, 163, 184, 0.12);
-
-border-radius: 17px; }
-
-table { width: 100%;
-
-min-width: 850px;
-
-border-collapse: collapse; }
-
-th { background: rgba(2, 6, 23, 0.55);
-
-color: #64748b;
-
-text-transform: uppercase;
-
-font-size: 10px;
-
-letter-spacing: 0.8px;
-
-text-align: left;
-
-padding: 15px 13px;
-
-border-bottom: 1px solid rgba(148, 163, 184, 0.12); }
-
-td { padding: 15px 13px;
-
-color: #cbd5e1;
-
-font-size: 13px;
-
-border-bottom: 1px solid rgba(148, 163, 184, 0.07); }
-
-tbody tr { transition: background 0.2s ease; }
-
-tbody tr:hover { background: rgba(56, 189, 248, 0.045); }
-
-tbody tr:last-child td { border-bottom: none; }
-
-td button { min-height: 34px;
-
-padding: 0 10px;
-
-margin-right: 5px;
-
-font-size: 11px; }
-
-td button:first-child { background: rgba(56, 189, 248, 0.1);
-
-border: 1px solid rgba(56, 189, 248, 0.18);
-
-color: #7dd3fc; }
-
-td button:last-child { background: rgba(244, 63, 94, 0.1);
-
-border: 1px solid rgba(244, 63, 94, 0.18);
-
-color: #fb7185; }
-
-/* ========================================================= RESPONSIVE ========================================================= */
-
-@media (max-width: 950px) {
-
-.layout { grid-template-columns: 1fr; }
-
-.panel { width: 100%; }
-
-}
-
-@media (max-width: 600px) {
-
-body { padding: 20px 12px; }
-
-.topbar { align-items: flex-start; }
-
-.estado-online { display: none; }
-
-.marca h1 { font-size: 20px; }
-
-.marca p { font-size: 11px; }
-
-.logo { width: 47px; height: 47px; }
-
-.panel { padding: 20px; border-radius: 20px; }
-
-.acciones { grid-template-columns: 1fr; }
-
-.tabla-top { align-items: stretch;
-
-flex-direction: column; }
-
-#btnCerrar { width: 100%; }
-
-}
-
-</style> </head>
-
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captura de Datos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f3f4f6;
+      --card-bg: #ffffff;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --success: #10b981;
+      --success-hover: #059669;
+      --warning: #f59e0b;
+      --warning-hover: #d97706;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Card principal */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .header {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    .header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Grid del formulario */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      background-color: #fafafa;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+      background-color: #fff;
+    }
+
+    /* Grupo de Botones */
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    button {
+      padding: 0.65rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(50%);
+    }
+
+    /* Estilos específicos de botones */
+    #btnRegistrar {
+      background-color: var(--success);
+      color: white;
+    }
+    #btnRegistrar:hover:not(:disabled) {
+      background-color: var(--success-hover);
+    }
+
+    #btnConsultar {
+      background-color: var(--primary);
+      color: white;
+    }
+    #btnConsultar:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+    }
+
+    #btnModificar {
+      background-color: var(--warning);
+      color: white;
+    }
+    #btnModificar:hover:not(:disabled) {
+      background-color: var(--warning-hover);
+    }
+
+    #btnEliminar {
+      background-color: var(--danger);
+      color: white;
+    }
+    #btnEliminar:hover:not(:disabled) {
+      background-color: var(--danger-hover);
+    }
+
+    #btnCerrar {
+      background-color: #6b7280;
+      color: white;
+    }
+    #btnCerrar:hover {
+      background-color: #4b5563;
+    }
+
+    /* Estado / Mensajes */
+    #estado {
+      margin-top: 1rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--primary);
+      min-height: 1.2rem;
+    }
+
+    /* Sección Tabla */
+    #seccionTabla {
+      display: none;
+    }
+
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    #buscador {
+      max-width: 320px;
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    thead {
+      background-color: #f9fafb;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: #f9fafb;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .table-actions button {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+    }
+
+    .table-actions button:first-child {
+      background-color: #e0e7ff;
+      color: var(--primary);
+    }
+    .table-actions button:first-child:hover {
+      background-color: #c7d2fe;
+    }
+
+    .table-actions button:last-child {
+      background-color: #fee2e2;
+      color: var(--danger);
+    }
+    .table-actions button:last-child:hover {
+      background-color: #fecaca;
+    }
+  </style>
+</head>
 <body>
 
-<div class="contenedor">
-
-<!-- ===================================================== ENCABEZADO ====================================================== -->
-
-<header class="topbar">
-
-<div class="marca">
-
-<div class="logo"> 👥 </div>
-
-<div> <h1>Gestión de Registros</h1>
-
-<p> Panel de administración de datos </p> </div>
-
-</div>
-
-<div class="estado-online">
-
-<span class="punto"></span>
-
-Sistema activo
-
-</div>
-
-</header>
-
-<!-- ===================================================== CONTENIDO ====================================================== -->
-
-<main class="layout">
-
-<!-- =================================================== FORMULARIO ==================================================== -->
-
-<section class="panel">
-
-<div class="panel-titulo">
-
-<div class="panel-icono"> ✚ </div>
-
-<div>
-
-<h2>Nuevo registro</h2>
-
-<p> Introduce la información </p>
-
-</div>
-
-</div>
-
-<form id="formulario">
-
-<input type="hidden" id="id" >
-
-<!-- NOMBRE -->
-
-<div class="campo">
-
-<label for="nombre"> Nombre </label>
-
-<div class="input-contenedor">
-
-<span class="input-icono"> 👤 </span>
-
-<input type="text" id="nombre" placeholder="Nombre completo" required >
-
-</div>
-
-</div>
-
-<!-- EDAD -->
-
-<div class="campo">
-
-<label for="edad"> Edad </label>
-
-<div class="input-contenedor">
-
-<span class="input-icono"> 🎂 </span>
-
-<input type="number" id="edad" placeholder="Edad" required min="1" max="120" >
-
-</div>
-
-</div>
-
-<!-- CARGO -->
-
-<div class="campo">
-
-<label for="cargo"> Cargo </label>
-
-<div class="input-contenedor">
-
-<span class="input-icono"> 💼 </span>
-
-<input type="text" id="cargo" placeholder="Cargo o puesto" required >
-
-</div>
-
-</div>
-
-<!-- CORREO -->
-
-<div class="campo">
-
-<label for="correo"> Correo electrónico </label>
-
-<div class="input-contenedor">
-
-<span class="input-icono"> ✉️ </span>
-
-<input type="text" id="correo" placeholder="correo@ejemplo.com" required >
-
-</div>
-
-</div>
-
-<!-- TELEFONO -->
-
-<div class="campo">
-
-<label for="telefono"> Teléfono </label>
-
-<div class="input-contenedor">
-
-<span class="input-icono"> 📱 </span>
-
-<input type="number" id="telefono" placeholder="Número telefónico" required min="1" max="1000000000" >
-
-</div>
-
-</div>
-
-<!-- BOTONES -->
-
-<div class="acciones">
-
-<button type="button" id="btnRegistrar" > ✚ Registrar </button>
-
-<button type="button" id="btnConsultar" > ☷ Consultar </button>
-
-<button type="button" id="btnModificar" > ✎ Modificar </button>
-
-<button type="button" id="btnEliminar" > × Eliminar </button>
-
-</div>
-
-</form>
-
-<p id="estado"></p>
-
-</section>
-
-<!-- =================================================== TABLA ==================================================== -->
-
-<section id="seccionTabla" class="panel tabla-panel" >
-
-<div class="tabla-top">
-
-<div class="tabla-titulo">
-
-<div class="tabla-titulo-icono"> ☷ </div>
-
-<div>
-
-<h2>Registros</h2>
-
-<p> Consulta y administra la información </p>
-
-</div>
-
-</div>
-
-<button type="button" id="btnCerrar" > ✕ Cerrar </button>
-
-</div>
-
-<!-- BUSCADOR -->
-
-<div class="buscador-contenedor">
-
-<span> 🔎 </span>
-
-<input type="text" id="buscador" placeholder="Buscar por nombre..." >
-
-</div>
-
-<!-- TABLA -->
-
-<div class="tabla-scroll">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th> Fecha </th>
-
-<th> Nombre </th>
-
-<th> Edad </th>
-
-<th> Cargo </th>
-
-<th> Correo </th>
-
-<th> Teléfono </th>
-
-<th> Acciones </th>
-
-</tr>
-
-</thead>
-
-<tbody id="tabla"></tbody>
-
-</table>
-
-</div>
-
-</section>
-
-</main>
-
-</div>
-
-<!-- ======================================================= JAVASCRIPT ORIGINAL ======================================================== -->
-
-<script>
-
-var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyx0lR3kZkr5B2Ebtg0jW0B0YctCFeW8iTxuPIJiuDLBOqgeqOMvl7Hz-divoaahL3t/exec";
-
-var registros = [];
-
-var tablaVisible = false;
-
-// ENVIAR DATOS
-
-function enviar(datos) {
-
-return fetch(URL_SCRIPT, {
-
-method: "POST",
-
-body: new URLSearchParams(datos)
-
-}).then(function (r) {
-
-return r.json();
-
-});
-
-}
-
-// ACTUALIZAR BOTONES
-
-function actualizarBotones() {
-
-var hayRegistro = document.getElementById("id").value !== "";
-
-document.getElementById("btnRegistrar").disabled = hayRegistro;
-
-document.getElementById("btnModificar").disabled = !hayRegistro;
-
-document.getElementById("btnEliminar").disabled = !hayRegistro;
-
-}
-
-// LIMPIAR FORMULARIO
-
-function limpiarFormulario() {
-
-document.getElementById("formulario").reset();
-
-document.getElementById("id").value = "";
-
-actualizarBotones();
-
-}
-
-// REGISTRAR
-
-document.getElementById("btnRegistrar").onclick = function () {
-
-if ( !document .getElementById("formulario") .reportValidity() ) return;
-
-document.getElementById("estado").textContent = "Guardando...";
-
-enviar({
-
-accion: "guardar",
-
-nombre: document.getElementById("nombre").value,
-
-edad: document.getElementById("edad").value,
-
-cargo: document.getElementById("cargo").value,
-
-correo: document.getElementById("correo").value,
-
-telefono: document.getElementById("telefono").value
-
-}).then(function (respuesta) {
-
-terminarAccion( respuesta, "¡Registro guardado!" );
-
-});
-
-};
-
-// CONSULTAR
-
-document.getElementById("btnConsultar").onclick = function () {
-
-document.getElementById("estado").textContent = "Consultando...";
-
-tablaVisible = true;
-
-document.getElementById("seccionTabla") .style.display = "block";
-
-cargarRegistros(function () {
-
-document.getElementById("estado") .textContent = "";
-
-});
-
-};
-
-function cargarRegistros(alTerminar) {
-
-fetch(URL_SCRIPT)
-
-.then(function (r) {
-
-return r.json();
-
-})
-
-.then(function (datos) {
-
-registros = datos;
-
-mostrarTabla();
-
-if (alTerminar) { alTerminar(); }
-
-});
-
-}
-
-// MOSTRAR TABLA
-
-function mostrarTabla() {
-
-var filtro = document.getElementById("buscador") .value .trim() .toLowerCase();
-
-var tabla = document.getElementById("tabla");
-
-tabla.innerHTML = "";
-
-registros.forEach(function (reg) {
-
-if ( !reg.nombre .toString() .toLowerCase() .startsWith(filtro) ) return;
-
-var tr = document.createElement("tr");
-
-agregarCelda( tr, new Date(reg.fecha) .toLocaleString() );
-
-agregarCelda( tr, reg.nombre );
-
-agregarCelda( tr, reg.edad );
-
-agregarCelda( tr, reg.cargo );
-
-agregarCelda( tr, reg.correo );
-
-agregarCelda( tr, reg.telefono );
-
-var td = document.createElement("td");
-
-var btnModificarFila = document.createElement("button");
-
-btnModificarFila.textContent = "✎ Modificar";
-
-btnModificarFila.onclick = function () {
-
-cargarEnFormulario(reg);
-
-};
-
-var btnEliminarFila = document.createElement("button");
-
-btnEliminarFila.textContent = "× Eliminar";
-
-btnEliminarFila.onclick = function () {
-
-eliminar(reg.id);
-
-};
-
-td.appendChild( btnModificarFila );
-
-td.appendChild( btnEliminarFila );
-
-tr.appendChild(td);
-
-tabla.appendChild(tr);
-
-});
-
-}
-
-function agregarCelda( fila, texto ) {
-
-var td = document.createElement("td");
-
-td.textContent = texto;
-
-fila.appendChild(td);
-
-}
-
-// BUSCADOR
-
-document.getElementById("buscador") .oninput = mostrarTabla;
-
-// CERRAR TABLA
-
-document.getElementById("btnCerrar") .onclick = function () {
-
-tablaVisible = false;
-
-document.getElementById( "seccionTabla" ).style.display = "none";
-
-document.getElementById( "buscador" ).value = "";
-
-document.getElementById( "tabla" ).innerHTML = "";
-
-};
-
-// CARGAR REGISTRO
-
-function cargarEnFormulario(reg) {
-
-document.getElementById("id").value = reg.id;
-
-document.getElementById("nombre").value = reg.nombre;
-
-document.getElementById("edad").value = reg.edad;
-
-document.getElementById("cargo").value = reg.cargo;
-
-document.getElementById("correo").value = reg.correo;
-
-document.getElementById("telefono").value = reg.telefono;
-
-document.getElementById("estado").textContent = "Modificando registro: cambia los datos y presiona Modificar";
-
-actualizarBotones();
-
-window.scrollTo({
-
-top: 0,
-
-behavior: "smooth"
-
-});
-
-document.getElementById( "nombre" ).focus();
-
-}
-
-// MODIFICAR
-
-document.getElementById("btnModificar") .onclick = function () {
-
-var id = document.getElementById("id").value;
-
-if (id === "") {
-
-alert( "Primero elige un registro con el botón 'Modificar registro'" );
-
-return;
-
-}
-
-if ( !document .getElementById("formulario") .reportValidity() ) return;
-
-document.getElementById("estado") .textContent = "Modificando...";
-
-enviar({
-
-accion: "editar",
-
-id: id,
-
-nombre: document.getElementById("nombre").value,
-
-edad: document.getElementById("edad").value,
-
-cargo: document.getElementById("cargo").value,
-
-correo: document.getElementById("correo").value,
-
-telefono: document.getElementById("telefono").value
-
-}).then(function (respuesta) {
-
-terminarAccion( respuesta, "¡Registro modificado!" );
-
-});
-
-};
-
-// ELIMINAR
-
-document.getElementById("btnEliminar") .onclick = function () {
-
-eliminar( document.getElementById("id").value );
-
-};
-
-function eliminar(id) {
-
-if ( !confirm( "¿Seguro que quieres eliminar este registro?" ) ) return;
-
-document.getElementById("estado") .textContent = "Eliminando...";
-
-enviar({
-
-accion: "eliminar",
-
-id: id
-
-}).then(function (respuesta) {
-
-terminarAccion( respuesta, "Registro eliminado" );
-
-});
-
-}
-
-// FINALIZAR ACCIÓN
-
-function terminarAccion( respuesta, mensajeOk ) {
-
-document.getElementById( "estado" ).textContent =
-
-respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
-
-limpiarFormulario();
-
-if (tablaVisible) {
-
-cargarRegistros();
-
-}
-
-}
-
-// INICIALIZAR
-
-actualizarBotones();
-
-</script>
-
-</body> </html>
+  <div class="container">
+    <!-- Formulario Principal -->
+    <div class="card">
+      <div class="header">
+        <h2>📋 Captura de Datos</h2>
+      </div>
+
+      <form id="formulario">
+        <input type="hidden" id="id">
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" required placeholder="Ej. Ana García">
+          </div>
+
+          <div class="form-group">
+            <label for="edad">Edad</label>
+            <input type="number" id="edad" required min="1" max="120" placeholder="Ej. 28">
+          </div>
+
+          <div class="form-group">
+            <label for="cargo">Cargo</label>
+            <input type="text" id="cargo" required placeholder="Ej. Desarrolladora">
+          </div>
+
+          <div class="form-group">
+            <label for="correo">Correo Electrónico</label>
+            <input type="text" id="correo" required placeholder="correo@ejemplo.com">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="telefono">Teléfono</label>
+            <input type="number" id="telefono" required min="1" max="1000000000" placeholder="Ej. 5551234567">
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" id="btnRegistrar">Registrar</button>
+          <button type="button" id="btnConsultar">Consultar</button>
+          <button type="button" id="btnModificar">Modificar</button>
+          <button type="button" id="btnEliminar">Eliminar</button>
+        </div>
+      </form>
+
+      <p id="estado"></p>
+    </div>
+
+    <!-- Sección Tabla -->
+    <div id="seccionTabla" class="card">
+      <div class="header">
+        <h2>📊 Registros Encontrados</h2>
+      </div>
+
+      <div class="table-controls">
+        <input type="text" id="buscador" placeholder="🔍 Buscar por nombre...">
+        <button type="button" id="btnCerrar">Cerrar tabla</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Nombre</th>
+              <th>Edad</th>
+              <th>Cargo</th>
+              <th>Correo</th>
+              <th>Teléfono</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyx0lR3kZkr5B2Ebtg0jW0B0YctCFeW8iTxuPIJiuDLBOqgeqOMvl7Hz-divoaahL3t/exec";
+    var registros = [];
+    var tablaVisible = false;
+
+    //  Enviar datos al script 
+    function enviar(datos) {
+      return fetch(URL_SCRIPT, {
+        method: "POST",
+        body: new URLSearchParams(datos)
+      }).then(function (r) { return r.json(); });
+    }
+
+    //  Botones activos según el estado 
+    function actualizarBotones() {
+      var hayRegistro = document.getElementById("id").value !== "";
+      document.getElementById("btnRegistrar").disabled = hayRegistro;
+      document.getElementById("btnModificar").disabled = !hayRegistro;
+      document.getElementById("btnEliminar").disabled = !hayRegistro;
+    }
+
+    function limpiarFormulario() {
+      document.getElementById("formulario").reset();
+      document.getElementById("id").value = "";
+      actualizarBotones();
+    }
+
+    // funcion REGISTRAR 
+    document.getElementById("btnRegistrar").onclick = function () {
+      if (!document.getElementById("formulario").reportValidity()) return;
+
+      document.getElementById("estado").textContent = "Guardando...";
+      enviar({
+        accion: "guardar",
+        nombre: document.getElementById("nombre").value,
+        edad: document.getElementById("edad").value,
+        cargo: document.getElementById("cargo").value,
+        correo: document.getElementById("correo").value,
+        telefono: document.getElementById("telefono").value
+      }).then(function (respuesta) {
+        terminarAccion(respuesta, "¡Registro guardado!");
+      });
+    };
+
+    // funcion de CONSULTAR 
+    document.getElementById("btnConsultar").onclick = function () {
+      document.getElementById("estado").textContent = "Consultando...";
+      tablaVisible = true;
+      document.getElementById("seccionTabla").style.display = "block";
+      cargarRegistros(function () {
+        document.getElementById("estado").textContent = "";
+      }); 
+    };
+
+    function cargarRegistros(alTerminar) {
+      fetch(URL_SCRIPT)
+        .then(function (r) { return r.json(); })
+        .then(function (datos) {
+          registros = datos;
+          mostrarTabla();
+          if (alTerminar) alTerminar();
+        });
+    }
+
+    function mostrarTabla() {
+      var filtro = document.getElementById("buscador").value.trim().toLowerCase();
+      var tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
+
+      registros.forEach(function (reg) {
+        if (!reg.nombre.toString().toLowerCase().startsWith(filtro)) return;
+
+        var tr = document.createElement("tr");
+        agregarCelda(tr, new Date(reg.fecha).toLocaleString());
+
+        agregarCelda(tr, reg.nombre);
+        agregarCelda(tr, reg.edad);
+        agregarCelda(tr, reg.cargo);
+        agregarCelda(tr, reg.correo);
+        agregarCelda(tr, reg.telefono);
+
+        var td = document.createElement("td");
+        td.className = "table-actions";
+
+        var btnModificarFila = document.createElement("button");
+        btnModificarFila.textContent = "Modificar";
+        btnModificarFila.onclick = function () { cargarEnFormulario(reg); };
+
+        var btnEliminarFila = document.createElement("button");
+        btnEliminarFila.textContent = "Eliminar";
+        btnEliminarFila.onclick = function () { eliminar(reg.id); };
+
+        td.appendChild(btnModificarFila);
+        td.appendChild(btnEliminarFila);
+        tr.appendChild(td);
+        tabla.appendChild(tr);
+      });
+    }
+
+    function agregarCelda(fila, texto) {
+      var td = document.createElement("td");
+      td.textContent = texto;
+      fila.appendChild(td);
+    }
+
+    document.getElementById("buscador").oninput = mostrarTabla;
+
+    // CERRAR TABLA 
+    document.getElementById("btnCerrar").onclick = function () {
+      tablaVisible = false;
+      document.getElementById("seccionTabla").style.display = "none";
+      document.getElementById("buscador").value = "";
+      document.getElementById("tabla").innerHTML = "";
+    };
+
+    // ---------- Pasar el registro al formulario ----------
+    function cargarEnFormulario(reg) {
+      document.getElementById("id").value = reg.id;
+      document.getElementById("nombre").value = reg.nombre;
+      document.getElementById("edad").value = reg.edad;
+      document.getElementById("cargo").value = reg.cargo;
+      document.getElementById("correo").value = reg.correo;
+      document.getElementById("telefono").value = reg.telefono;
+
+      document.getElementById("estado").textContent =
+        "Modificando registro: cambia los datos y presiona Modificar";
+      actualizarBotones();
+
+      window.scrollTo(0, 0);
+      document.getElementById("nombre").focus();
+    }
+
+    // ---------- MODIFICAR ----------
+    document.getElementById("btnModificar").onclick = function () {
+      var id = document.getElementById("id").value;
+
+      if (id === "") {
+        alert("Primero elige un registro con el botón 'Modificar'");
+        return;
+      }
+      if (!document.getElementById("formulario").reportValidity()) return;
+
+      document.getElementById("estado").textContent = "Modificando...";
+      enviar({
+        accion: "editar",
+        id: id,
+        nombre: document.getElementById("nombre").value,
+        edad: document.getElementById("edad").value,
+        cargo: document.getElementById("cargo").value,
+        correo: document.getElementById("correo").value,
+        telefono: document.getElementById("telefono").value
+      }).then(function (respuesta) {
+        terminarAccion(respuesta, "¡Registro modificado!");
+      });
+    };
+
+    // Funcion para ELIMINAR 
+    document.getElementById("btnEliminar").onclick = function () {
+      eliminar(document.getElementById("id").value);
+    };
+
+    function eliminar(id) {
+      if (!confirm("¿Seguro que quieres eliminar este registro?")) return;
+
+      document.getElementById("estado").textContent = "Eliminando...";
+      enviar({ accion: "eliminar", id: id }).then(function (respuesta) {
+        terminarAccion(respuesta, "Registro eliminado");
+      });
+    }
+
+    // Mensaje al terminar cualquier acción 
+    function terminarAccion(respuesta, mensajeOk
